@@ -1,5 +1,5 @@
 #!/bin/bash
-set -euo pipefail
+set -euxo pipefail
 IN=$1; OUT=$2; MIN=$3
 R=$PWD/report.txt; : > $R
 rm -rf w && mkdir w && cd w && unzip -q ../$IN
