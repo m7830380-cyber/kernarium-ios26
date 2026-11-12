@@ -25,6 +25,15 @@ for _ in range(ncmds):
                 v |= bit
                 struct.pack_into('<I' if fmt in (1, 2) else '<Q', d, p, v)
                 print('weak:', n); done += 1
+    if cmd == 2:  # LC_SYMTAB
+        so, ns, stro, _ = struct.unpack_from('<4I', d, off + 8)
+        for i in range(ns):
+            q = so + i * 16
+            sx = struct.unpack_from('<I', d, q)[0]
+            e = d.index(0, stro + sx); n = d[stro + sx:e].decode(errors='ignore')
+            if n in names and (d[q + 4] & 0x0e) == 0:
+                desc = struct.unpack_from('<H', d, q + 6)[0] | 0x40
+                struct.pack_into('<H', d, q + 6, desc); print('nlist weak:', n)
     off += sz
 open(path, 'wb').write(d)
 print('patched', done, 'of', len(names))
