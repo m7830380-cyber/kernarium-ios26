@@ -1,5 +1,6 @@
 name: patch
 on: workflow_dispatch
+permissions: { contents: write }
 jobs:
   p:
     runs-on: macos-26
@@ -14,3 +15,5 @@ jobs:
       - uses: actions/upload-artifact@v4
         if: always()
         with: { name: report, path: report.txt }
+      - env: { GH_TOKEN: "${{ github.token }}" }
+        run: gh release create ios26-b9 Andarium-1.0-9-ios26.ipa -t "Andarium 1.0 b9 (iOS 26)" -n "Min iOS lowered to 26.0, ad-hoc signed. Re-sign with your sideloader." || gh release upload ios26-b9 Andarium-1.0-9-ios26.ipa --clobber
