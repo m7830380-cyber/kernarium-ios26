@@ -1,5 +1,5 @@
 #!/bin/bash
-set -euxo pipefail
+set -eu
 IN=$1; OUT=$2; MIN=$3
 R=$PWD/report.txt; : > $R
 rm -rf w && mkdir w && cd w && unzip -q ../$IN
@@ -13,7 +13,7 @@ find Payload -name Info.plist | while read p; do
 done
 SDK=$(xcrun --sdk iphoneos --show-sdk-path)
 # collect Mach-Os
-find Payload -type f | while read f; do file -b "$f" | grep -q Mach-O && echo "$f"; done > ../machos.txt
+find Payload -type f | while read f; do file -b "$f" | grep -q Mach-O && echo "$f" || true; done > ../machos.txt
 while read f; do
   ent=$(mktemp); codesign -d --entitlements :- "$f" > "$ent" 2>/dev/null || true
   echo "$f" >> ../ents.txt; [ -s "$ent" ] && cp "$ent" "$f.ent.plist.tmp"
