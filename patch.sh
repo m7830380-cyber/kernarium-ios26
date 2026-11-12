@@ -22,8 +22,8 @@ while read f; do
   vtool -set-build-version ios $MIN 27.0 -replace -output "$f.new" "$f" && mv "$f.new" "$f"
 done < ../machos.txt
 python3 ../weaken.py "$APP/Andarium" '_$s7SwiftUI12TupleContentVyxxQp_QPGAA07ToolbarD0AARvzAaERzlMc' '_$s7SwiftUI13PreferenceKeyP22_preferenceValuesEqualySb5ValueQz_AFtFZTq' '_$s7SwiftUI13PreferenceKeyPAASQ5ValueRpzrlE22_preferenceValuesEqualySbAE_AEtFZ' >> $R
-RB="_AVAudioSessionDidBecomeInactiveNotification=_AVAudioSessionInterruptionNotification _AVAudioSessionResumptionRecommendationNotification=_AVAudioSessionInterruptionNotification _AVAudioSessionDeactivationContextKey=_AVAudioSessionRouteChangeReasonKey _AVAudioSessionResumptionContextKey=_AVAudioSessionRouteChangeReasonKey"
-for f in $APP/Frameworks/KRuntime_*/KRuntime_*; do python3 ../rebind.py "$f" $RB >> $R; done
+RB="_AVAudioSessionDidBecomeInactiveNotification=_AVAudioSessionInterruptionNotification _AVAudioSessionResumptionRecommendationNotification=_AVAudioSessionInterruptionNotification"
+for f in $APP/Frameworks/KRuntime_*/KRuntime_*; do python3 ../weaken.py "$f" _AVAudioSessionDeactivationContextKey _AVAudioSessionResumptionContextKey >> $R; python3 ../rebind.py "$f" $RB >> $R; done
 # symbol check against iOS SDK tbds
 echo "### SDK $(xcrun --sdk iphoneos --show-sdk-version)" >> $R
 python3 ../symcheck.py "$SDK" ../machos.txt >> $R 2>&1 || true
